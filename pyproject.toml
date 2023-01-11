@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "dbhelpers"
+version = "0.0.1"
+description = "Exemplos, funcoes prontas e tutoriais para Databricks"
+authors = ["Flavio Malavazi <flavio.malavazi1@gmail.com>"]
+license = "GNU GENERAL PUBLIC LICENSE VERSION 3"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+black = "^22.12.0"
+flake8 = "^6.0.0"
+pre-commit = "^2.21.0"
+isort = "^5.11.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+target-version = ['py39']
+line-length = 90
+include = '\.pyi?$'
+preview = true
+exclude = '''
+(
+    \.git
+    | \.github
+    | \.circleci
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \venv
+    | \.venv
+    | \.eggs
+    | \notebooks
+    | notebooks
+    | _build
+    | buck-out
+    | dist
+    | src
+    | venv
+)'''
+
+[tool.isort]
+py_version=39
+skip = [".venv", "notebooks"]
