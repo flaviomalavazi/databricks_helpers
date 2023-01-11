@@ -4,8 +4,8 @@ max-line-length = 90
 max-complexity = 18
 select = B,C,E,F,W,T4,B9
 exclude = 
-    notebooks
-    notebooks/
+    ^notebooks,
+    ^notebooks/*
 per-file-ignores =
     # imported but unused
     __init__.py: F401
