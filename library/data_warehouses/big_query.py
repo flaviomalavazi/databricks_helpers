@@ -1,3 +1,6 @@
+# Databricks notebook source
+# COMMAND ----------
+
 import base64
 import json
 import re
