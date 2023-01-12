@@ -34,6 +34,7 @@
 # MAGIC executando leituras de tabelas inteiras ou queries específicas.
 
 # COMMAND ----------
+%run ../library/data_warehouses/big_query
 
 
 # COMMAND ----------
@@ -51,7 +52,7 @@ big_query_credentials = {
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sua_service_account%40seu_projeto.iam.gserviceaccount.com",
 }
 
-key_generator(big_query_credentials)
+credentials_generator(big_query_credentials)
 
 # COMMAND ----------
 
@@ -161,8 +162,6 @@ dbutils.secrets.list("bq_demo")  # noqa: F821
 # MAGIC Para ler os dados de uma tabela inteira do big query, podemos utilizar a estrutura abaixo, que foi tirada
 # MAGIC [da documentação do Databricks](https://docs.databricks.com/external-data/bigquery.html#google-bigquery)
 
-# COMMAND ----------
-%run ../library/data_warehouses/big_query
 
 # COMMAND ----------
 
@@ -209,5 +208,5 @@ df.limit(20).display()
 # COMMAND ----------
 
 # DBTITLE 1,Lendo os dados no BQ utilizando uma query
-df = bigQuery.read(query=query, temp_schema=temp_schema)
+df = bigQuery.read(query=query, materialization_dataset=temp_schema)
 df.limit(20).display()
