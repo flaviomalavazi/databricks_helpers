@@ -64,7 +64,6 @@ class databricksAccountHandler():
 
 # COMMAND ----------
 
-from pandas import offsets
 account = databricksAccountHandler(account_id = account_id, username = username, password = password)
 start_month = datetime.now() - pd.offsets.DateOffset(months=2)
 end_month = datetime.now() - pd.offsets.DateOffset(months=1)
