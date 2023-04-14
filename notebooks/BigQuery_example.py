@@ -1,15 +1,15 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC # Configuração do cluster que vai acessar o BQ:
-# MAGIC
+# MAGIC 
 # MAGIC Assumindo que a configuração da Service Account que fará a leitura dos dados do BQ já está pronta, e seus
 # MAGIC acessos configurados dentro do warehouse, podemos passar diretamente para o passo 2
 # MAGIC [desta documentação](https://docs.databricks.com/external-data/bigquery.html#step-2-set-up-databricks), e
 # MAGIC fazer a configuração das chaves de acesso do BigQuery em um Cluster Databricks que fará a leitura dos dados.
-# MAGIC
+# MAGIC 
 # MAGIC Um exemplo prático dos parâmetros e valores que devem ser inseridos na aba `spark` da configuração do cluster
 # MAGIC Databricks, com valores fictícios para as credenciais, pode ser encontrado abaixo:
-# MAGIC
+# MAGIC 
 # MAGIC ```
 # MAGIC credentials string_em_base64
 # MAGIC spark.hadoop.fs.gs.auth.service.account.email sua_service_account@seu_projeto.iam.gserviceaccount.com
@@ -17,13 +17,14 @@
 # MAGIC spark.hadoop.google.cloud.auth.service.account.enable true
 # MAGIC spark.hadoop.fs.gs.auth.service.account.private.key -----BEGIN PRIVATE KEY-----\nSTRING_BEM_COMPRIDA\n-----END PRIVATE KEY-----\n
 # MAGIC spark.hadoop.fs.gs.auth.service.account.private.key.id STRING_ALFANUMERICA_COM_40_CARACTERES
-# MAGIC
+# MAGIC 
 # MAGIC ```
-# MAGIC
-# MAGIC
+# MAGIC 
+# MAGIC 
 # MAGIC Para auxiliar na geração do base64 do json de credenciais do BQ, pode ser utilizado o código abaixo:
 
 # COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## Definição de funções para tratar o json de credenciais do BigQuery
 # MAGIC ## para base64 e criar nosso objeto para interagir com o Warehouse
@@ -34,8 +35,8 @@
 # MAGIC executando leituras de tabelas inteiras ou queries específicas.
 
 # COMMAND ----------
-%run ../library/data_warehouses/big_query
 
+# MAGIC %run ../library/data_warehouses/big_query
 
 # COMMAND ----------
 
@@ -61,28 +62,28 @@ credentials_generator(big_query_credentials)
 # MAGIC Como as variáveis do spark para acesso ao BQ contém as credenciais da conta de serviço, não é interessante
 # MAGIC expormos isso em texto simples, para evitar fazer isso, podemos empregar os Databricks secrets, para fazer
 # MAGIC isso, vamos criar um secret scope com o [databricks-cli](https://docs.databricks.com/dev-tools/cli/index.html)
-# MAGIC
+# MAGIC 
 # MAGIC O comando para criar o secret scope é:
-# MAGIC
+# MAGIC 
 # MAGIC ```Databricks secrets create-scope --scope <scope-name>```
-# MAGIC
+# MAGIC 
 # MAGIC Para seguirmos com os exemplos passo a passo, vamos usar o nome `bq_demo` como nosso nome de escopo, desta
 # MAGIC forma, a criação do escopo fica:
-# MAGIC
+# MAGIC 
 # MAGIC ```Databricks secrets create-scope --scope bq_demo```
-# MAGIC
-# MAGIC
+# MAGIC 
+# MAGIC 
 # MAGIC Uma vez criado nosso escopo, podemos colocar as chaves que precisaremos para acessar o BigQuery, a sintaxe
 # MAGIC para acrescentar chaves é:
-# MAGIC
+# MAGIC 
 # MAGIC ```Databricks secrets put --scope <scope-name> --key <key-name>```
-# MAGIC
+# MAGIC 
 # MAGIC Então, vamos começar colocando a chave de credenciais (que vamos chamar de `base64_credentials`):
-# MAGIC
+# MAGIC 
 # MAGIC ```Databricks secrets put --scope bq_demo --key base64_credentials``` -- Colocando o json em base64
 # MAGIC (obtido com o código acima)
-# MAGIC
-# MAGIC
+# MAGIC 
+# MAGIC 
 # MAGIC E acrescentaremos as demais chaves necessárias depois:
 # MAGIC <br>
 # MAGIC ```Databricks secrets put --scope bq_demo --key private_key``` -- Colocando a private_key (chave no json: `private_key`)
@@ -102,7 +103,7 @@ dbutils.secrets.list("bq_demo")  # noqa: F821
 
 # MAGIC %md
 # MAGIC # Utilizando escopos de segredos nas configurações do cluster
-# MAGIC
+# MAGIC 
 # MAGIC Agora que configuramos nosso escopo de segredos, podemos usar a seguinte estrutura para configurar nosso
 # MAGIC cluster (na aba de configurações avançadas->spark):
 # MAGIC ```
@@ -112,7 +113,7 @@ dbutils.secrets.list("bq_demo")  # noqa: F821
 # MAGIC spark.hadoop.google.cloud.auth.service.account.enable true
 # MAGIC spark.hadoop.fs.gs.auth.service.account.private.key {{secrets/bq_demo/private_key}}
 # MAGIC spark.hadoop.fs.gs.auth.service.account.private.key.id {{secrets/bq_demo/private_key_id}}
-# MAGIC
+# MAGIC 
 # MAGIC ```
 
 # COMMAND ----------
@@ -150,7 +151,7 @@ dbutils.secrets.list("bq_demo")  # noqa: F821
 # MAGIC O código abaixo valida se os parâmetros de acesso do big query foram configurados corretamente no cluster que
 # MAGIC está sendo utilizado para ler do big query, caso seja levantada uma exceção no código abaixo, muito
 # MAGIC provavelmente a leitura falhará por erros na configuração do cluster.
-# MAGIC
+# MAGIC 
 # MAGIC Em caso de passagem sem erros pelo código abaixo, ainda podemos ter problemas de permissionamento para o
 # MAGIC usuário de serviço no BigQuery, que devem ser ajustados no projeto de BQ na conta da GCP.
 
@@ -158,10 +159,9 @@ dbutils.secrets.list("bq_demo")  # noqa: F821
 
 # MAGIC %md
 # MAGIC # Lendo dados do BigQuery
-# MAGIC
+# MAGIC 
 # MAGIC Para ler os dados de uma tabela inteira do big query, podemos utilizar a estrutura abaixo, que foi tirada
 # MAGIC [da documentação do Databricks](https://docs.databricks.com/external-data/bigquery.html#google-bigquery)
-
 
 # COMMAND ----------
 
@@ -199,10 +199,10 @@ df.limit(20).display()
 
 # MAGIC %md
 # MAGIC # Lendo dados no BQ utilizando queries
-# MAGIC
+# MAGIC 
 # MAGIC Para ler dados no BQ a partir de uma query, precisamos de um dataset temporário que será usado
 # MAGIC para materializar os resultados da query antes deles serem carregados para o spark.
-# MAGIC
+# MAGIC 
 # MAGIC Este e mais exemplos de leitura também podem ser encontrados no [link de documentação da Databricks](https://docs.databricks.com/external-data/bigquery.html#google-bigquery-python-sample-notebook)
 
 # COMMAND ----------
