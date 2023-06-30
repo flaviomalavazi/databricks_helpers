@@ -133,6 +133,9 @@ dmypy.json
 .DS_Store
 in_progress/*
 
+# Delta Sharing Credentials
+*.share
+
 # # Golang ignores
 # *.mod
 # *.sum
