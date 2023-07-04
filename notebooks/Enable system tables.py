@@ -66,7 +66,7 @@ print(f"Unavailable schemas: {others}")
 
 # COMMAND ----------
 
-for schema in already_enabled:
+for schema in schemas_to_enable:
     host = "https://"+dbutils.notebook.entry_point.getDbutils().notebook().getContext().browserHostName().get()
     headers = {"Authorization": "Bearer "+dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().get()}
     r = requests.put(f"{host}/api/2.0/unity-catalog/metastores/{metastore_id}/systemschemas/{schema}", headers=headers)
