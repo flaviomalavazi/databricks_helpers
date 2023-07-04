@@ -12,11 +12,16 @@
 # MAGIC %md
 # MAGIC ### Creating the widget to be used as input for the metastore ID
 # MAGIC The metastore ID can be found by clicking on the metastore details icon present in the `Data` tab of your Databricks workspace.
-# MAGIC ![metastore_id_image](./images/metastore_id.png)
 
 # COMMAND ----------
 
-dbutils.widgets.text("metastore_id", "", "Metastore ID")
+metastore_id = spark.sql("SELECT current_metastore() as metastore_id").collect()[0]["metastore_id"]
+metastore_id = metastore_id[metastore_id.rfind(':')+1:]
+dbutils.widgets.removeAll()
+
+# COMMAND ----------
+
+dbutils.widgets.text("metastore_id", metastore_id, "Metastore ID")
 
 # COMMAND ----------
 
