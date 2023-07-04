@@ -9,6 +9,11 @@
 # MAGIC - This example does not implement job updates
 # MAGIC - Assumes unique job names in your source workspace
 # MAGIC - Tested with `databricks-sdk==0.1.12` and Databricks Runtime 13.1
+# MAGIC
+# MAGIC ####Using this example:
+# MAGIC 1. Import the parent folder of this notebook to your databricks workspace
+# MAGIC 2. Run this notebook step by step
+# MAGIC 3. After running the notebook, a sample job called `my_job` should have been created in your workspace, and it will have 3 tasks (which use the 3 notebooks in the same folder as this one).
 
 # COMMAND ----------
 
