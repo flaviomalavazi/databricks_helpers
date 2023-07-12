@@ -1,0 +1,48 @@
+{
+    "pipeline_type": "WORKSPACE",
+    "clusters": [
+        {
+            "label": "default",
+            "custom_tags": {
+                "owner": "<SEU_EMAIL>",
+                "removeAfter": "2023-07-31"
+            },
+            "autoscale": {
+                "min_workers": 1,
+                "max_workers": 3,
+                "mode": "ENHANCED"
+            }
+        },
+        {
+            "label": "maintenance",
+            "custom_tags": {
+                "owner": "<SEU_EMAIL>",
+                "removeAfter": "2023-07-31"
+            }
+        }
+    ],
+    "development": true,
+    "continuous": false,
+    "channel": "PREVIEW",
+    "photon": false,
+    "libraries": [
+        {
+            "notebook": {
+                "path": "/Repos/<SEU_EMAIL>/databricks_helpers/demos/DLT_credit_cards_demo/01_Delta_Live_Tables/DLT_Credit_Cards_SQL"
+            }
+        }
+    ],
+    "name": "Credit_cards_full_pipeline_YOUR_NAME",
+    "edition": "ADVANCED",
+    "catalog": "YOUR_CATALOG",
+    "configuration": {
+        "landing_path": "dbfs:/Users/<SEU_EMAIL>/demos/dlt_credit_cards",
+        "bronze_data_format": "json",
+        "bronze_table_name": "landing_credit_card_transaction",
+        "bronze_infer_column_types": "true",
+        "clean_silver_table": "merchant_credit_card_transactions",
+        "aggregated_gold_table": "gold_merchant_credit_card_transactions_daily_agg"
+    },
+    "target": "YOUR_SCHEMA",
+    "data_sampling": false
+}
