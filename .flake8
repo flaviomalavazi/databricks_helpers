@@ -1,11 +1,13 @@
 [flake8]
-ignore = E501, W503, F403, F821, E402, W605
+ignore = E501, W503, F403, F821, E402, W605, F405
 max-line-length = 90
 max-complexity = 18
 select = B,C,E,F,W,T4,B9
 exclude = 
     ^notebooks,
-    ^notebooks/*
+    ^notebooks/*,
+    ^demos/*,
+    ^demos
 per-file-ignores =
     # imported but unused
     __init__.py: F401

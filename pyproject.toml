@@ -39,6 +39,8 @@ force-exclude = '''
     | \.eggs
     | \notebooks
     | notebooks
+    | \demos
+    | demos
     | _build
     | buck-out
     | dist
