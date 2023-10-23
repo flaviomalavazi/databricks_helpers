@@ -56,7 +56,7 @@ others = []
 for schema in r['schemas']:
     if schema['state'].lower() == "available":
         schemas_to_enable.append(schema["schema"])
-    elif schema['state'].lower() == "enablecompleted":
+    elif schema['state'].upper() == "ENABLE_COMPLETED":
         already_enabled.append(schema["schema"])
     else:
         others.append(schema["schema"])
