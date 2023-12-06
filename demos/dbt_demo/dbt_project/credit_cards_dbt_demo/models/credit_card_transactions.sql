@@ -16,4 +16,4 @@ select
   last_day(to_date(card_expiration_date,"MM/yy"))  as transaction_card_expiration_date,
   now()                                            as last_update_at
 from
-  flavio_malavazi.dbt_web_events_demo.tab_sale_transactions
+  flavio_malavazi.dbt_credit_cards_demo_raw.tab_sale_transactions

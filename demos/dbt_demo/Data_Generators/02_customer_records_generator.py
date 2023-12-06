@@ -6,12 +6,20 @@
 # COMMAND ----------
 
 dbutils.widgets.removeAll()
-dbutils.widgets.text("ref_bq_table", "bq_federated.flavio_malavazi.tab_web_events", "Reference table")
-dbutils.widgets.text("target_table", "flavio_malavazi.dbt_web_events_demo.tab_customer_records", "Target table")
+
+dbutils.widgets.removeAll()
+dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
+dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
+dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
+
+target_catalog = dbutils.widgets.get("target_catalog")
+target_schema = dbutils.widgets.get("target_schema")
+source_table = dbutils.widgets.get("ref_bq_table")
+
+dbutils.widgets.text("target_table", f"{target_catalog}.{target_schema}.tab_customer_records", "Target table")
 
 # COMMAND ----------
 
-source_table = dbutils.widgets.get("ref_bq_table")
 df = spark.read.table(source_table)
 
 # COMMAND ----------

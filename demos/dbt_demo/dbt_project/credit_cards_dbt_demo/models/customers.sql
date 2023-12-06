@@ -21,7 +21,7 @@ select
     record_created_at   as customer_record_created_at,
     last_update_at      as customer_record_last_update_at
 from
-    flavio_malavazi.dbt_web_events_demo.tab_customer_records
+    flavio_malavazi.dbt_credit_cards_demo_raw.tab_customer_records
 
 ), customer_transactions as (
 
@@ -45,7 +45,7 @@ select
     max(event_timestamp) as customer_latest_web_interaction,
     count(distinct event_id) as customer_distinct_interactions
 from
-    bq_federated.flavio_malavazi.tab_web_events
+    lakehouse_federation_bigquery.flavio_malavazi.tab_web_events
 group by
     customer_id
 )
@@ -69,7 +69,7 @@ select
     ct.customer_latest_transaction_at,
     ct.customer_transactions,
     now() as last_update_at
-from 
+from
     customer_records as cr
     left join customer_web_events as cwe on cwe.customer_id = cr.customer_id
     left join customer_transactions as ct on ct.customer_id = cr.customer_id

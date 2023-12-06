@@ -5,10 +5,23 @@
 # COMMAND ----------
 
 dbutils.widgets.removeAll()
-dbutils.widgets.text("path", "/Volumes/flavio_malavazi/dbt_web_events_demo/landing_database_events", "Where to put the data?")
-dbutils.widgets.text("ref_bq_table", "bq_federated.flavio_malavazi.tab_web_events", "Reference table")
-dbutils.widgets.text("checkpoints", "/Volumes/flavio_malavazi/dbt_web_events_demo/streaming_checkpoints", "Where to store checkpoints")
-dbutils.widtets.text("target_table", "flavio_malavazi.dbt_web_events_demo.tab_sale_transactions", "Target table")
+dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
+dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
+dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
+
+target_catalog = dbutils.widgets.get("target_catalog")
+target_schema = dbutils.widgets.get("target_schema")
+source_table = dbutils.widgets.get("ref_bq_table")
+
+dbutils.widgets.text("path", f"/Volumes/{target_catalog}/{target_schema}/landing_database_events", "Where to put the data?")
+dbutils.widgets.text("checkpoints", f"/Volumes/{target_catalog}/{target_schema}/streaming_checkpoints", "Where to store checkpoints")
+dbutils.widgets.text("target_table", f"{target_catalog}.{target_schema}.tab_sale_transactions", "Target table")
+
+# COMMAND ----------
+
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.landing_database_events")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.streaming_checkpoints")
 
 # COMMAND ----------
 
@@ -210,8 +223,10 @@ class dataProducer():
                         23,23,23,23,23
                     ])).zfill(2)
 
-    def generate_fauty_transaction(self, parameter_dict: dict) -> dict:
-        base_measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict)
+    def generate_fauty_transaction(self, parameter_dict: dict, **kwargs) -> dict:
+        customer_id = kwargs.get("customer_id", None)
+        transaction_timestamp = kwargs.get("transaction_timestamp", None)
+        base_measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict, customer_id = customer_id, transaction_timestamp = transaction_timestamp)
         measurement = {}
         feature_to_break = choice(["timestamp","merchant_name","bill_value","installments","card_network","card_bin","card_holder",])
         if ((feature_to_break == "timestamp")):
@@ -237,8 +252,10 @@ class dataProducer():
                 print(f"Final Measurement: {final_measurement}")
         return final_measurement
     
-    def generate_chargeback_transaction(self, parameter_dict: dict) -> dict:
-        measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict)
+    def generate_chargeback_transaction(self, parameter_dict: dict, **kwargs) -> dict:
+        customer_id = kwargs.get("customer_id", None)
+        transaction_timestamp = kwargs.get("transaction_timestamp", None)
+        measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict, customer_id = customer_id, transaction_timestamp = transaction_timestamp)
         measurement["type"] = "chargeback"
         measurement["bill_value"] = - measurement["bill_value"]
         return measurement
@@ -247,11 +264,11 @@ class dataProducer():
         message_type = choice(["legitimate", "legitimate", "legitimate", "legitimate", "chargeback", "chargeback", "faulty"]) if message_type == None else message_type
         parameter_dict = parameter_dict if parameter_dict != {"key": []} else self.parameter_dict
         if ((message_type == "legitimate") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_legitimate_transaction(parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_legitimate_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
         elif ((message_type == "chargeback") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_chargeback_transaction(parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_chargeback_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
         elif ((message_type == "faulty") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_fauty_transaction(parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_fauty_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
         else:
             pass
 
