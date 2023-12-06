@@ -5,7 +5,6 @@ dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schem
 dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
 dbutils.widgets.text("temporary_gcs_bucket", "", "Temp GCS Bucket")
 dbutils.widgets.text("target_bucket_path", "", "Target Path")
-dbutils.widgets.dropdown("write_mode", "overwrite", ["append", "overwrite"], "Write mode")
 dbutils.widgets.dropdown("reset_data", "false", ["true", "false"], "Reset media data")
 
 target_catalog = dbutils.widgets.get("target_catalog")
@@ -130,7 +129,7 @@ from datetime import datetime
 
 target_bq_table_google = dbutils.widgets.get("target_bq_table_google")
 temporary_gcs_bucket = dbutils.widgets.get("temporary_gcs_bucket")
-bq_write_mode = dbutils.widgets.get("write_mode")
+bq_write_mode = "overwrite" if dbutils.widgets.get("reset_data") == 'true' else "append"
 
 # COMMAND ----------
 
