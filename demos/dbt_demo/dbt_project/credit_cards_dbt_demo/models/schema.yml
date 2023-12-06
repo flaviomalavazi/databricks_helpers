@@ -1,0 +1,99 @@
+
+version: 2
+
+models:
+  - name: customers
+    description: "Customer table with their identifying data (hashed) and aggregate relationship metrics"
+    columns:
+      - name: customer_id
+        description: "Customer identifier: the primary key for this table composed of the hash of each customer's email"
+        # tests:
+        #   - unique
+        #   - not_null
+      - name: customer_name
+        description: "Hashed customer name"
+      - name: customer_address
+        description: "Hashed customer address"
+      - name: customer_city
+        description: "Customer's city of residence"
+      - name: customer_state
+        description: "Customer's state of residence"
+      - name: customer_lucky_number
+        description: "Customer's state of residence"
+      - name: customer_record_created_at
+        description: "Timestamp when the customer record was created"
+      - name: customer_record_last_update_at
+        description: "Timestamp when the customer record was last updated"
+      - name: customer_first_web_interaction
+        description: "Timestamp when the customer interacted with us for the first time"
+      - name: customer_latest_web_interaction
+        description: "Timestamp when the customer interacted with us for the last time"
+      - name: customer_distinct_interactions
+        description: "Number of interactions the customer had with us"
+      - name: customer_total_value_transactioned
+        description: "Total value transactioned by that customer"
+      - name: customer_average_value_transactioned
+        description: "Average value transactioned by that customer"
+      - name: customer_first_transaction_at
+        description: "Timestamp when the customer first transactioned with us"
+      - name: customer_latest_transaction_at
+        description: "Timestamp when the customer last transactioned with us"
+      - name: customer_transactions
+        description: "Number of transactions "
+      - name: last_update_at
+        description: "Timestamp when this table was last updated"
+
+  - name: credit_card_transactions
+    description: "Credit Card Transactions table. This table converts typing for the data in the landing zone as well as hashes out pii data."
+    columns:
+      - name: customer_id
+        description: "Customer identifier column to identify which customer made each transaction" 
+      - name: transaction_type
+        description: "Type of transaction" 
+      - name: transaction_timestamp
+        description: "Timestmap when the transaction ocurred" 
+      - name: transaction_merchant_type
+        description: "Merchant type where the transaction ocurred" 
+      - name: transaction_merchant_name
+        description: "Merchant where the transaction ocurred" 
+      - name: transaction_card_holder
+        description: "Hashed credit card holder name for each transaction"
+      - name: transaction_currency
+        description: "Transaction currency"
+      - name: transaction_card_network
+        description: "Card network for this transaction"
+      - name: transaction_card_bin
+        description: "Credit card numeric bin for this transaction"
+      - name: transaction_bill_value
+        description: "Transaction value" 
+      - name: transaction_installments
+        description: "Transaction installments number"
+      - name: transaction_card_expiration_date
+        description: "Credit card expiration date for this transaction"
+      - name: last_update_at
+        description: "Last update of each record in this table"
+  - name: bu_results
+    description: ""
+    columns:
+      - name: transaction_merchant_type
+        description: "Merchant type (BU)"
+      - name: transaction_card_network
+        description: "Card network that made the transaction"
+      - name: transaction_date
+        description: "Reference date (transaction date) for the aggregations"
+      - name: bu_distinct_transactions
+        description: "Distinct transactions per BU"
+      - name: bu_distinct_customers
+        description: "Distinct customers per BU"
+      - name: bu_distinct_expense_transactions
+        description: "Distinct expense type transactions per BU"
+      - name: bu_distinct_chargeback_transactions
+        description: "Distinct chargeback type transactions per BU"
+      - name: bu_total_bill_value
+        description: "Total value transactioned per BU"
+      - name: bu_average_bill_value
+        description: "Average bill value per BU"
+      - name: bu_first_transaction_at
+        description: "Timestammp for the first transaction in each BU"
+      - name: bu_latest_transaction_at
+        description: "Timestammp for the latest transaction in each BU"
