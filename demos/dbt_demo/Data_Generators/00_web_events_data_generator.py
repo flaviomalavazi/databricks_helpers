@@ -59,8 +59,3 @@ df = generate_web_events(
     temporary_gcs_bucket=temporary_gcs_bucket,
     target_bq_table=target_bq_table,
 )
-
-# COMMAND ----------
-
-# df.where("event_type <> 'pageview'").limit(30).display()
-df.groupBy("event_type").count().display()

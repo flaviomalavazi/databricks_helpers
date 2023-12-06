@@ -6,8 +6,6 @@
 # COMMAND ----------
 
 dbutils.widgets.removeAll()
-
-dbutils.widgets.removeAll()
 dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
 dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
 dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
