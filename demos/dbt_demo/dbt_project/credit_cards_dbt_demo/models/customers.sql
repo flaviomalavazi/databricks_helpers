@@ -26,7 +26,7 @@ from
 ), customer_transactions as (
 
 select
-    sha2(customer_id, 256)              as customer_id,
+    customer_id                         as customer_id,
     sum(transaction_bill_value)         as customer_total_value_transactioned,
     avg(transaction_bill_value)         as customer_average_value_transactioned,
     min(transaction_timestamp)          as customer_first_transaction_at,
