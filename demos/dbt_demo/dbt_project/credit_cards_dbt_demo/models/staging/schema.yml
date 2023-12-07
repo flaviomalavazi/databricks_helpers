@@ -1,0 +1,106 @@
+version: 2
+
+models:
+  - name: vw_bing_ads
+    description: "Bing Ads most recent data view and basic metrics"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"
+
+  - name: vw_facebook_ads
+    description: "Facebook Ads most recent data view and basic metrics"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"
+
+  - name: vw_google_ads
+    description: "Google Ads most recent data view and basic metrics"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"
+
+  - name: vw_mailchimp
+    description: "Mailchimp most recent data view and basic metrics"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"

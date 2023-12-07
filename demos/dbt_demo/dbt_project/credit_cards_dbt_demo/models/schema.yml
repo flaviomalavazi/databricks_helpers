@@ -73,7 +73,7 @@ models:
       - name: last_update_at
         description: "Last update of each record in this table"
   - name: bu_results
-    description: ""
+    description: "BU level business results"
     columns:
       - name: transaction_merchant_type
         description: "Merchant type (BU)"
@@ -97,3 +97,29 @@ models:
         description: "Timestammp for the first transaction in each BU"
       - name: bu_latest_transaction_at
         description: "Timestammp for the latest transaction in each BU"
+
+  - name: consolidated_media
+    description: "Media data consolidated into a single table"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"

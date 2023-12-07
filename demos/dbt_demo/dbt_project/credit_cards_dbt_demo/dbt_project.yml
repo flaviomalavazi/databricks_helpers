@@ -32,10 +32,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   credit_cards_dbt_demo:
-    # Config indicated by + and applies to all files under models/example/
-    bu_results:
-      +materialized: view
-    credit_card_transactions:
-      +materialized: view
-    customers:
-      +materialized: view
+    materialized: table
+    staging:
+      materialized: view
