@@ -8,16 +8,22 @@ dbutils.widgets.removeAll()
 dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
 dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
 dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
+dbutils.widgets.dropdown("reset_data", "false", ["true", "false"], "Reset the data")
 
 target_catalog = dbutils.widgets.get("target_catalog")
 target_schema = dbutils.widgets.get("target_schema")
 source_table = dbutils.widgets.get("ref_bq_table")
+reset_data = True if dbutils.widgets.get("reset_data") == 'true' else False
 
 dbutils.widgets.text("path", f"/Volumes/{target_catalog}/{target_schema}/landing_database_events", "Where to put the data?")
 dbutils.widgets.text("checkpoints", f"/Volumes/{target_catalog}/{target_schema}/streaming_checkpoints", "Where to store checkpoints")
 dbutils.widgets.text("target_table", f"{target_catalog}.{target_schema}.tab_sale_transactions", "Target table")
 
 # COMMAND ----------
+
+if reset_data:
+    print("Resetting table payments data")
+    spark.sql(f"DROP SCHEMA IF EXISTS  {target_catalog}.{target_schema} CASCADE;")
 
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.landing_database_events")
@@ -30,14 +36,14 @@ df = spark.read.table(source_table)
 
 # COMMAND ----------
 
-actual_orders = df.where("page_url_path = '/confirmation'").select("user_custom_id", "event_timestamp").drop_duplicates()
+actual_orders = df.where("page_url_path = '/confirmation'").select("user_custom_id", "event_timestamp", "event_id").drop_duplicates()
 
 # COMMAND ----------
 
 rows = actual_orders.collect()
 orders = []
 for row in rows:
-    orders.append({"user_id": row.user_custom_id, "event_timestamp": row.event_timestamp})
+    orders.append({"user_id": row.user_custom_id, "event_timestamp": row.event_timestamp, "transaction_id": row.event_id})
 
 # COMMAND ----------
 
@@ -169,12 +175,13 @@ class dataProducer():
     def generate_legitimate_transaction(self, parameter_dict: dict, **kwargs) -> dict:
         customer_id = kwargs.get("customer_id", None)
         transaction_timestamp = kwargs.get("transaction_timestamp", None)
+        transaction_id = kwargs.get("transaction_id", None)
         card_network = choice(self.card_networks)
         merchant_type = choice(list(self.parameter_dict.keys()))
         if self.debug:
             print(f"card_network = {card_network}, merchant_type = {merchant_type}")
         measurement = {
-            "transaction_id": f"{uuid4()}",
+            "transaction_id": f"{uuid4()}" if transaction_id is None else customer_id,
             "customer_id": f"{uuid4()}" if customer_id is None else customer_id,
             "timestamp": self.generate_timestamp().strip()[:-2] if transaction_timestamp is None else transaction_timestamp,
             "merchant_name": choice(parameter_dict[merchant_type]),
@@ -225,8 +232,9 @@ class dataProducer():
 
     def generate_fauty_transaction(self, parameter_dict: dict, **kwargs) -> dict:
         customer_id = kwargs.get("customer_id", None)
+        transaction_id = kwargs.get("transaction_id", None)
         transaction_timestamp = kwargs.get("transaction_timestamp", None)
-        base_measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict, customer_id = customer_id, transaction_timestamp = transaction_timestamp)
+        base_measurement = self.generate_legitimate_transaction(parameter_dict = parameter_dict, customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id)
         measurement = {}
         feature_to_break = choice(["timestamp","merchant_name","bill_value","installments","card_network","card_bin","card_holder",])
         if ((feature_to_break == "timestamp")):
@@ -260,15 +268,15 @@ class dataProducer():
         measurement["bill_value"] = - measurement["bill_value"]
         return measurement
     
-    def generate_measurement(self, customer_id = None, transaction_timestamp = None, parameter_dict: dict = {"key": []}, message_type: str = None) -> None:
+    def generate_measurement(self, customer_id = None, transaction_timestamp = None, transaction_id = None, parameter_dict: dict = {"key": []}, message_type: str = None) -> None:
         message_type = choice(["legitimate", "legitimate", "legitimate", "legitimate", "chargeback", "chargeback", "faulty"]) if message_type == None else message_type
         parameter_dict = parameter_dict if parameter_dict != {"key": []} else self.parameter_dict
         if ((message_type == "legitimate") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_legitimate_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_legitimate_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
         elif ((message_type == "chargeback") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_chargeback_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_chargeback_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
         elif ((message_type == "faulty") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_fauty_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, parameter_dict = self.parameter_dict))
+            self.accumulate_records(measurement = self.generate_fauty_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
         else:
             pass
 
@@ -288,6 +296,7 @@ while nb_of_interactions > 0:
         producer.generate_measurement(
             customer_id=orders[nb_of_interactions]['user_id'],
             transaction_timestamp=orders[nb_of_interactions]['event_timestamp'],
+            transaction_id=orders[nb_of_interactions]['transaction_id']
         )
         buffer_messages = buffer_messages + 1
         nb_of_interactions = nb_of_interactions - 1
