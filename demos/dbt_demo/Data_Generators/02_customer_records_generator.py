@@ -6,15 +6,25 @@
 # COMMAND ----------
 
 dbutils.widgets.removeAll()
-dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
-dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
-dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
+dbutils.widgets.text("target_catalog", "", "Target catalog")
+dbutils.widgets.text("target_schema", "", "Target schema")
+dbutils.widgets.text("ref_bq_table", "", "Reference table")
+dbutils.widgets.dropdown("reset_data", "false", ["true", "false"], "Reset the data")
+dbutils.widgets.text("target_table", "", "Target table")
 
 target_catalog = dbutils.widgets.get("target_catalog")
 target_schema = dbutils.widgets.get("target_schema")
+target_table = dbutils.widgets.get("target_table")
 source_table = dbutils.widgets.get("ref_bq_table")
+reset_data = True if dbutils.widgets.get("reset_data") == 'true' else False
 
-dbutils.widgets.text("target_table", f"{target_catalog}.{target_schema}.tab_customer_records", "Target table")
+
+# COMMAND ----------
+
+if reset_data:
+    print("Resetting table payments data")
+    # spark.sql(f"DROP SCHEMA IF EXISTS  {target_catalog}.{target_schema} CASCADE;")
+    spark.sql(f"DROP TABLE IF EXISTS {target_table}")
 
 # COMMAND ----------
 
@@ -63,10 +73,6 @@ spark.conf.set("spark.sql.execution.arrow.pyspark.enabled", "true")
 df = spark.createDataFrame(df_mimesis)
 df = df.withColumn("record_created_at", lit(datetime.now()))
 df.createOrReplaceTempView("updated_records")
-
-# COMMAND ----------
-
-target_table = dbutils.widgets.get("target_table")
 
 # COMMAND ----------
 

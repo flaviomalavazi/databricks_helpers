@@ -5,9 +5,9 @@
 # COMMAND ----------
 
 dbutils.widgets.removeAll()
-dbutils.widgets.text("target_catalog", "flavio_malavazi", "Target catalog")
-dbutils.widgets.text("target_schema", "dbt_credit_cards_demo_raw", "Target schema")
-dbutils.widgets.text("ref_bq_table", "lakehouse_federation_bigquery.flavio_malavazi.tab_web_events", "Reference table")
+dbutils.widgets.text("target_catalog", "", "Target catalog")
+dbutils.widgets.text("target_schema", "", "Target schema")
+dbutils.widgets.text("ref_bq_table", "", "Reference table")
 dbutils.widgets.dropdown("reset_data", "false", ["true", "false"], "Reset the data")
 
 target_catalog = dbutils.widgets.get("target_catalog")
@@ -15,15 +15,23 @@ target_schema = dbutils.widgets.get("target_schema")
 source_table = dbutils.widgets.get("ref_bq_table")
 reset_data = True if dbutils.widgets.get("reset_data") == 'true' else False
 
-dbutils.widgets.text("path", f"/Volumes/{target_catalog}/{target_schema}/landing_database_events", "Where to put the data?")
-dbutils.widgets.text("checkpoints", f"/Volumes/{target_catalog}/{target_schema}/streaming_checkpoints", "Where to store checkpoints")
-dbutils.widgets.text("target_table", f"{target_catalog}.{target_schema}.tab_sale_transactions", "Target table")
+dbutils.widgets.text("path", "", "Where to put the data?")
+dbutils.widgets.text("checkpoints", "", "Where to store checkpoints")
+dbutils.widgets.text("target_table", "", "Target table")
+
+path = dbutils.widgets.get("path")
+checkpoint_path = dbutils.widgets.get("checkpoints")
+target_table = dbutils.widgets.get("target_table")
 
 # COMMAND ----------
 
 if reset_data:
     print("Resetting table payments data")
-    spark.sql(f"DROP SCHEMA IF EXISTS  {target_catalog}.{target_schema} CASCADE;")
+    # spark.sql(f"DROP SCHEMA IF EXISTS  {target_catalog}.{target_schema} CASCADE;")
+    spark.sql(f"DROP TABLE IF EXISTS  {target_table}")
+    spark.sql(f"DROP VOLUME IF EXISTS {target_catalog}.{target_schema}.landing_database_events")
+    spark.sql(f"DROP VOLUME IF EXISTS {target_catalog}.{target_schema}.streaming_checkpoints")
+    
 
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.landing_database_events")
@@ -181,7 +189,7 @@ class dataProducer():
         if self.debug:
             print(f"card_network = {card_network}, merchant_type = {merchant_type}")
         measurement = {
-            "transaction_id": f"{uuid4()}" if transaction_id is None else customer_id,
+            "transaction_id": f"{uuid4()}" if transaction_id is None else transaction_id,
             "customer_id": f"{uuid4()}" if customer_id is None else customer_id,
             "timestamp": self.generate_timestamp().strip()[:-2] if transaction_timestamp is None else transaction_timestamp,
             "merchant_name": choice(parameter_dict[merchant_type]),
@@ -283,9 +291,6 @@ class dataProducer():
 # COMMAND ----------
 
 producer = dataProducer(parameter_dict = segments, debug=False)
-path = dbutils.widgets.get("path")
-checkpoint_path = dbutils.widgets.get("checkpoints")
-target_table = dbutils.widgets.get("target_table")
 
 # COMMAND ----------
 
