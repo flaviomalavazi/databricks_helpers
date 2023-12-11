@@ -1,4 +1,3 @@
-
 select 
     ad_id
     ,investment_interval

@@ -4,7 +4,6 @@ select
     ,utm_source
     ,utm_campaign
     ,utm_content
-    ,emails_cost as spend
     ,emails_cost
     ,emails_sent
     ,emails_delivered
@@ -12,11 +11,6 @@ select
     ,emails_opened
     ,emails_clicked
     ,emails_unsubscribed
-    ,emails_opened                  as impressions
-    ,(emails_opened/1000.0)/spend   as cpm
-    ,emails_clicked                 as clicks
-    ,(clicks)/spend                 as cpc
-    ,(clicks*1.0)/impressions       as ctr
 from
     flavio_malavazi.dbt_credit_cards_demo_raw.tab_mailchimp
 where

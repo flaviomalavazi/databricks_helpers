@@ -1,6 +1,6 @@
 {{ config(materialized='table') }}
 
-select 
+select
   transaction_id,
   sha2(customer_id, 256)                           as customer_id,
   type                                             as transaction_type,

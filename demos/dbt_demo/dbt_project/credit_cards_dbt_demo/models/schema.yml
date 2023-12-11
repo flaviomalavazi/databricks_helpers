@@ -123,3 +123,187 @@ models:
         description: "Cost per click"
       - name: ctr
         description: "Click through rate"
+
+  - name: email_results
+    description: "Email campaign results"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: emails_cost
+        description: "Amount of dollars spent in the email"
+      - name: emails_sent
+        description: "Number of emails sent"
+      - name: emails_delivered
+        description: "Number of emails delivered"
+      - name: email_delivery_rate
+        description: "Email delivery rate"
+      - name: emails_bounced
+        description: "Number of emails bounced (emails_sent - emails_delivered)"
+      - name: email_bounce_rate
+        description: "Email bounce rate emails_bounced/emails_sent"
+      - name: emails_opened
+        description: "Number of emails opened"
+      - name: email_open_rate
+        description: "Open rate (delivered_emails/emails_opened)"
+      - name: emails_clicked
+        description: "Number of emails clicked"
+      - name: email_click_trough_rate
+        description: "Click through rate (emails_clicked/emails_opened)"
+      - name: emails_unsubscribed
+        description: "Number of emails unsubscribed"
+      - name: email_unsubscribe_rate
+        description: "Email unsubscribe rate (emails_unsubscribed/emails_delivered)"
+
+  - name: web_sessions
+    description: "Sessions table for our website"
+    columns:
+      - name: session_id
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: session_event_order
+        description: "Event order in each session"
+      - name: event_timestamp
+        description: "Timestamp in which the event ocurred"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: utm_medium
+        description: "UTM medium that brought the event (platform specific)"
+      - name: customer_id
+        description: "Customer ID for each event"
+      - name: event_id
+        description: "Event ID for each event, is the primary key for this table"
+      - name: browser_name
+        description: "Browser name for each event"
+      - name: browser_user_agent
+        description: "User agent in which the customer was visiting the website"
+      - name: click_id
+        description: "Click IDs for each event"
+      - name: device_is_mobile
+        description: "Flag that marks if the device is mobile"
+      - name: device_type
+        description: "Type of device that produced the event"
+      - name: event_type
+        description: "Registered event type for each event"
+      - name: geo_country
+        description: "Country where the event happened"
+      - name: os_name
+        description: "Name of the OS that produced the event"
+      - name: page_url
+        description: "Event page URL"
+      - name: page_url_path
+        description: "Path of the page where the event happened"
+      - name: referer_medium
+        description: "Referrer medium from where the event happened"
+      - name: referer_url
+        description: "Referrer URL from where the event happened"
+      - name: user_domain_id
+        description: "User Domain ID that produced the event"
+
+  - name: web_sessions
+    description: "Sessions table for our website"
+    columns:
+      - name: session_id
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: session_event_order
+        description: "Event order in each session"
+      - name: event_timestamp
+        description: "Timestamp in which the event ocurred"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: utm_medium
+        description: "UTM medium that brought the event (platform specific)"
+      - name: customer_id
+        description: "Customer ID for each event"
+      - name: event_id
+        description: "Event ID for each event, is the primary key for this table"
+      - name: browser_name
+        description: "Browser name for each event"
+      - name: browser_user_agent
+        description: "User agent in which the customer was visiting the website"
+      - name: click_id
+        description: "Click IDs for each event"
+      - name: device_is_mobile
+        description: "Flag that marks if the device is mobile"
+      - name: device_type
+        description: "Type of device that produced the event"
+      - name: event_type
+        description: "Registered event type for each event"
+      - name: geo_country
+        description: "Country where the event happened"
+      - name: os_name
+        description: "Name of the OS that produced the event"
+      - name: page_url
+        description: "Event page URL"
+      - name: page_url_path
+        description: "Path of the page where the event happened"
+      - name: referer_medium
+        description: "Referrer medium from where the event happened"
+      - name: referer_url
+        description: "Referrer URL from where the event happened"
+      - name: user_domain_id
+        description: "User Domain ID that produced the event"
+
+  - name: marketing_attribution
+    description: "Marketing conversion attribution"
+    columns:
+      - name: media_session_id_with_payment
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: media_attributed_first_ad
+        description: "Ad to which the conversion was attributed"
+      - name: media_raw_event_ad_id
+        description: "RAW conversion to validate our attribution model"
+      - name: media_attribution_flag
+        description: "Flag that identifies if the conversion was correctly attributed"
+      - name: media_payment_event_id
+        description: "Event ID for the transaction"
+      - name: customer_id
+        description: "Customer ID"
+      - name: transaction_card_network
+        description: "Card network used in the transaction"
+      - name: transaction_merchant_type
+        description: "Merchant type where the transaction ocurred"
+      - name: transaction_bill_value
+        description: "Value transactioned by the customer"
+      - name: transaction_timestamp
+        description: "Timestamp in which the transaction ocurred"
+
+  - name: marketing_results
+    description: "Marketing results view"
+    columns:
+      - name: investment_interval
+        description: "Hourly timestamp window for marketing"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: ad_cost_per_hour
+        description: "Ad cost in that period"
+      - name: impressions_per_period
+        description: "Number of media impressions in that ad for that period"
+      - name: clicks_per_period
+        description: "Number of media clicks in that ad for that period"
+      - name: total_payments_found
+        description: "Number of payments transactioned by customers"
+      - name: total_payments_value
+        description: "Total value transactioned by customers"
+
+
+
+
