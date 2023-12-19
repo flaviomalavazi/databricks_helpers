@@ -11,15 +11,18 @@
 
 with customer_records as (
 
-select 
-    sha2(email, 256)    as customer_id,
-    sha2(name, 256)     as customer_name,
-    sha2(address, 256)  as customer_address,
-    city                as customer_city,
-    state               as customer_state,
-    lucky_number        as customer_lucky_number,
-    record_created_at   as customer_record_created_at,
-    last_update_at      as customer_record_last_update_at
+select
+    sha2(email_id, 256)                     as customer_id,
+    sha2(name, 256)                         as customer_name,
+    sha2(address, 256)                      as customer_address,
+    username                                as customer_username,
+    email_provider                          as customer_email_provider,
+    sha2(username || email_provider,256)    as customer_email_hashed,
+    city                                    as customer_city,
+    state                                   as customer_state,
+    lucky_number                            as customer_lucky_number,
+    record_created_at                       as customer_record_created_at,
+    last_update_at                          as customer_record_last_update_at
 from
     flavio_malavazi.dbt_credit_cards_demo_raw.tab_customer_records
 
@@ -40,12 +43,12 @@ group by
 ), customer_web_events as (
 
 select
-    sha2(user_custom_id, 256) as customer_id,
+    customer_id,
     min(event_timestamp) as customer_first_web_interaction,
     max(event_timestamp) as customer_latest_web_interaction,
     count(distinct event_id) as customer_distinct_interactions
 from
-    lakehouse_federation_bigquery.flavio_malavazi.tab_web_events
+    {{ ref('vw_web_sessions') }}
 group by
     customer_id
 )
@@ -57,6 +60,9 @@ select
     cr.customer_address,
     cr.customer_city,
     cr.customer_state,
+    cr.customer_username,
+    cr.customer_email_provider,
+    cr.customer_email_hashed,
     cr.customer_lucky_number,
     cr.customer_record_created_at,
     cr.customer_record_last_update_at,

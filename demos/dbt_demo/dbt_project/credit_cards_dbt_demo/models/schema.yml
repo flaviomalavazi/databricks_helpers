@@ -7,9 +7,6 @@ models:
     columns:
       - name: customer_id
         description: "Customer identifier: the primary key for this table composed of the hash of each customer's email"
-        # tests:
-        #   - unique
-        #   - not_null
       - name: customer_name
         description: "Hashed customer name"
       - name: customer_address
@@ -20,6 +17,12 @@ models:
         description: "Customer's state of residence"
       - name: customer_lucky_number
         description: "Customer's state of residence"
+      - name: customer_username
+        description: "Customer's username"
+      - name: customer_email_provider
+        description: "Customer's email provider"
+      - name: customer_email_hashed
+        description: "Customer's email hashed"
       - name: customer_record_created_at
         description: "Timestamp when the customer record was created"
       - name: customer_record_last_update_at
@@ -177,38 +180,16 @@ models:
         description: "Campaign in which the ad ran (platform specific campaign id)"
       - name: utm_content
         description: "Content we ran in the ad (platform specific ad id)"
-      - name: utm_medium
-        description: "UTM medium that brought the event (platform specific)"
       - name: customer_id
         description: "Customer ID for each event"
       - name: event_id
         description: "Event ID for each event, is the primary key for this table"
-      - name: browser_name
+      - name: browser
         description: "Browser name for each event"
-      - name: browser_user_agent
-        description: "User agent in which the customer was visiting the website"
-      - name: click_id
-        description: "Click IDs for each event"
-      - name: device_is_mobile
-        description: "Flag that marks if the device is mobile"
-      - name: device_type
-        description: "Type of device that produced the event"
-      - name: event_type
-        description: "Registered event type for each event"
-      - name: geo_country
-        description: "Country where the event happened"
-      - name: os_name
-        description: "Name of the OS that produced the event"
       - name: page_url
         description: "Event page URL"
       - name: page_url_path
         description: "Path of the page where the event happened"
-      - name: referer_medium
-        description: "Referrer medium from where the event happened"
-      - name: referer_url
-        description: "Referrer URL from where the event happened"
-      - name: user_domain_id
-        description: "User Domain ID that produced the event"
 
   - name: web_sessions
     description: "Sessions table for our website"
@@ -225,38 +206,16 @@ models:
         description: "Campaign in which the ad ran (platform specific campaign id)"
       - name: utm_content
         description: "Content we ran in the ad (platform specific ad id)"
-      - name: utm_medium
-        description: "UTM medium that brought the event (platform specific)"
       - name: customer_id
         description: "Customer ID for each event"
       - name: event_id
         description: "Event ID for each event, is the primary key for this table"
-      - name: browser_name
+      - name: browser
         description: "Browser name for each event"
-      - name: browser_user_agent
-        description: "User agent in which the customer was visiting the website"
-      - name: click_id
-        description: "Click IDs for each event"
-      - name: device_is_mobile
-        description: "Flag that marks if the device is mobile"
-      - name: device_type
-        description: "Type of device that produced the event"
-      - name: event_type
-        description: "Registered event type for each event"
-      - name: geo_country
-        description: "Country where the event happened"
-      - name: os_name
-        description: "Name of the OS that produced the event"
       - name: page_url
         description: "Event page URL"
       - name: page_url_path
         description: "Path of the page where the event happened"
-      - name: referer_medium
-        description: "Referrer medium from where the event happened"
-      - name: referer_url
-        description: "Referrer URL from where the event happened"
-      - name: user_domain_id
-        description: "User Domain ID that produced the event"
 
   - name: marketing_attribution
     description: "Marketing conversion attribution"

@@ -2,7 +2,7 @@ with payment_sessions as (
 select
     session_id                          
     ,first(ad_id)                                                                       as first_ad_id
-    ,case when last(page_url_path) = '/confirmation' then last(event_id) else null end  as payment_event_id
+    ,case when last(page_url_path) = 'confirmation/' then last(event_id) else null end  as payment_event_id
     ,first(customer_id) as customer_id
 from
     {{ ref('web_sessions') }}
