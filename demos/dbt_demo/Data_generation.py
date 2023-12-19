@@ -12,6 +12,8 @@ dbutils.widgets.text("number_of_users", "1000", "Number of random users")
 dbutils.widgets.text("sessions_per_day", "30000", "Number of sessions per day")
 dbutils.widgets.text("simulation_duration", "120", "Simulation duration")
 
+# COMMAND ----------
+
 target_catalog = dbutils.widgets.get("target_catalog")
 target_schema = dbutils.widgets.get("target_schema")
 target_big_query_table = dbutils.widgets.get("target_bq_table_web_events")
@@ -22,15 +24,11 @@ number_of_users = int(dbutils.widgets.get("number_of_users"))
 sessions_per_day = int(dbutils.widgets.get("sessions_per_day"))
 simulation_duration =int(dbutils.widgets.get("simulation_duration"))
 
-dbutils.widgets.text("ref_bq_table", f"{lakehouse_federation_bigquery_catalog}.{target_big_query_table}", "Reference table")
-dbutils.widgets.text("payments_path", f"/Volumes/{target_catalog}/{target_schema}/landing_database_events", "Where to put payment data?")
-dbutils.widgets.text("payments_checkpoints", f"/Volumes/{target_catalog}/{target_schema}/streaming_checkpoints", "Where to store checkpoints")
-
 ## Widgets for notebook 02
-big_query_federated_table = dbutils.widgets.get("ref_bq_table")
-payments_path = dbutils.widgets.get("payments_path")
+big_query_federated_table = f"{lakehouse_federation_bigquery_catalog}.{target_big_query_table}"
+payments_path = f"/Volumes/{target_catalog}/{target_schema}/landing_database_events"
 target_external_location = dbutils.widgets.get("target_external_location")
-payments_checkpoint_path = dbutils.widgets.get("payments_checkpoints")
+payments_checkpoint_path = f"/Volumes/{target_catalog}/{target_schema}/streaming_checkpoints"
 target_table_transactions = f"{target_catalog}.{target_schema}.tab_sale_transactions"
 target_table_customers = f"{target_catalog}.{target_schema}.tab_customer_records"
 
@@ -42,7 +40,7 @@ target_table_m = f"{target_catalog}.{target_schema}.tab_mailchimp_emails"
 
 # COMMAND ----------
 
-dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator', timeout_seconds=1200, arguments={
+dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator_v2', timeout_seconds=3600, arguments={
     "temporary_gcs_bucket": temporary_gcs_bucket,
     "target_bq_table": target_big_query_table,
     "reset_data": reset_data,
@@ -54,7 +52,7 @@ dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator', time
 # COMMAND ----------
 
 dbutils.notebook.run(path='./Data_Generators/01_transaction_events_generator', timeout_seconds=1200, arguments={
-    "target_bucket_path": payments_path,
+    "path": payments_path,
     "checkpoints": payments_checkpoint_path,
     "target_catalog": target_catalog,
     "target_schema": target_schema,
@@ -87,3 +85,7 @@ dbutils.notebook.run(path='./Data_Generators/03_media_data_generation', timeout_
     "target_table_b": target_table_b,
     "target_table_m": target_table_m,
 })
+
+# COMMAND ----------
+
+

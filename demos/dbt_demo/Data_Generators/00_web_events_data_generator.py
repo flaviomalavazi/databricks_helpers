@@ -16,7 +16,7 @@ dbutils.widgets.text("simulation_duration", "120", "Simulation duration")
 
 temporary_gcs_bucket = dbutils.widgets.get("temporary_gcs_bucket")
 target_bq_table = dbutils.widgets.get("target_bq_table")
-write_mode = "overwrite" if dbutils.widgets.get("reset_data") == "true" else "overwrite"
+write_mode = "overwrite" if dbutils.widgets.get("reset_data") == "true" else "append"
 number_of_users = int(dbutils.widgets.get("number_of_users"))
 sessions_per_day = int(dbutils.widgets.get("sessions_per_day"))
 simulation_duration =int(dbutils.widgets.get("simulation_duration"))

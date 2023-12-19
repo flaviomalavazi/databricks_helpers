@@ -23,7 +23,6 @@ reset_data = True if dbutils.widgets.get("reset_data") == 'true' else False
 
 if reset_data:
     print("Resetting table payments data")
-    # spark.sql(f"DROP SCHEMA IF EXISTS  {target_catalog}.{target_schema} CASCADE;")
     spark.sql(f"DROP TABLE IF EXISTS {target_table}")
 
 # COMMAND ----------
@@ -32,36 +31,49 @@ df = spark.read.table(source_table)
 
 # COMMAND ----------
 
-customers = df.where("page_url_path = '/cart'").select("user_custom_id").drop_duplicates()
+customers = df.where("page_url_path = 'cart/'").select("user_id").drop_duplicates()
 
 # COMMAND ----------
 
-customer_list = [x.user_custom_id for x in customers.select("user_custom_id").collect()]
+customer_list = [x.user_id for x in customers.select("user_id").collect()]
 
 # COMMAND ----------
 
 from mimesis import Person
 from mimesis import Address
-from mimesis.enums import Gender
 from mimesis import Datetime
-person = Person('en')
 import pandas as pd
+import numpy as np
 import random
+person = Person('en')
 person = Person()
 addess = Address()
 datetime = Datetime()
+EMAIL_PROVIDERS = (
+    ["@gmail.com"]*140 + 
+    ["@hotmail.com"]*20 +
+    ["@outlook.com"]*18 + 
+    ["@icloud.com"]* 10 +
+    ["@uol.com.br"]*1 + 
+    ["@bol.com.br"]*1
+)
 def create_rows_mimesis(num=1):
-    output = [{"name":person.full_name(gender=Gender.FEMALE),
+    output = [{"name":person.full_name(),
                    "address":addess.address(),
+                   "username": person.username(),
                    "name":person.name(),
                    "city":addess.city(),
                    "state":addess.state(),
                    "last_update_at":datetime.datetime(),
-                   "lucky_number":random.randint(1000,2000)} for x in range(num)]
+                   "lucky_number":random.randint(0,2000)} for x in range(num)]
     return output
 
+
+
+email_providers = list(np.random.choice(EMAIL_PROVIDERS, len(customer_list)))
 df_mimesis = pd.DataFrame(create_rows_mimesis(len(customer_list)))
-df_mimesis["email"] = customer_list
+df_mimesis["email_id"] = customer_list
+df_mimesis["email_provider"] = email_providers
 
 # COMMAND ----------
 
@@ -83,10 +95,12 @@ else:
     # Else we just merge our changes into it
     spark.sql(f"""
                 MERGE INTO {target_table} AS target USING updated_records AS source
-                ON target.email = source.email
+                ON target.email_id = source.email_id
                 WHEN MATCHED THEN UPDATE SET 
                     target.address = source.address,
                     target.name = source.name,
+                    target.username = source.username,
+                    target.email_provider = source.email_provider,
                     target.city = source.city,
                     target.state = source.state,
                     target.last_update_at = source.last_update_at,

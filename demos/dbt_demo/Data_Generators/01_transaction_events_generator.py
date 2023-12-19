@@ -44,14 +44,14 @@ df = spark.read.table(source_table)
 
 # COMMAND ----------
 
-actual_orders = df.where("page_url_path = '/confirmation'").select("user_custom_id", "event_timestamp", "event_id").drop_duplicates()
+actual_orders = df.where("page_url_path = 'confirmation/'").select("user_id", "event_timestamp", "event_id").drop_duplicates()
 
 # COMMAND ----------
 
 rows = actual_orders.collect()
 orders = []
 for row in rows:
-    orders.append({"user_id": row.user_custom_id, "event_timestamp": row.event_timestamp, "transaction_id": row.event_id})
+    orders.append({"user_id": row.user_id, "event_timestamp": row.event_timestamp, "transaction_id": row.event_id})
 
 # COMMAND ----------
 
@@ -191,7 +191,7 @@ class dataProducer():
         measurement = {
             "transaction_id": f"{uuid4()}" if transaction_id is None else transaction_id,
             "customer_id": f"{uuid4()}" if customer_id is None else customer_id,
-            "timestamp": self.generate_timestamp().strip()[:-2] if transaction_timestamp is None else transaction_timestamp,
+            "timestamp": str(self.generate_timestamp().strip()[:-2] if transaction_timestamp is None else transaction_timestamp),
             "merchant_name": choice(parameter_dict[merchant_type]),
             "merchant_type":  merchant_type,
             "bill_value": (gauss(100, 50) + randint(-20, 20)) * self.generate_bill_multiplier(card_network=card_network, merchant_type=merchant_type),
@@ -246,7 +246,7 @@ class dataProducer():
         measurement = {}
         feature_to_break = choice(["timestamp","merchant_name","bill_value","installments","card_network","card_bin","card_holder",])
         if ((feature_to_break == "timestamp")):
-            measurement["timestamp"] = (datetime.now() + timedelta(hours=randint(1, 5), minutes=randint(0,30))).strftime("%Y-%m-%d %H:%M:%S.%f").strip()[:-2]
+            measurement["timestamp"] = str((datetime.now() + timedelta(hours=randint(1, 5), minutes=randint(0,30))).strftime("%Y-%m-%d %H:%M:%S.%f").strip()[:-2])
         elif ((feature_to_break == "merchant_name")):
             measurement["merchant_name"] = None
         elif ((feature_to_break == "bill_value")):
@@ -277,14 +277,12 @@ class dataProducer():
         return measurement
     
     def generate_measurement(self, customer_id = None, transaction_timestamp = None, transaction_id = None, parameter_dict: dict = {"key": []}, message_type: str = None) -> None:
-        message_type = choice(["legitimate", "legitimate", "legitimate", "legitimate", "chargeback", "chargeback", "faulty"]) if message_type == None else message_type
+        message_type = choice(["legitimate", "legitimate", "legitimate", "legitimate", "legitimate", "chargeback"]) if message_type == None else message_type
         parameter_dict = parameter_dict if parameter_dict != {"key": []} else self.parameter_dict
         if ((message_type == "legitimate") and (parameter_dict != {"key": []})):
             self.accumulate_records(measurement = self.generate_legitimate_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
         elif ((message_type == "chargeback") and (parameter_dict != {"key": []})):
             self.accumulate_records(measurement = self.generate_chargeback_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
-        elif ((message_type == "faulty") and (parameter_dict != {"key": []})):
-            self.accumulate_records(measurement = self.generate_fauty_transaction(customer_id = customer_id, transaction_timestamp = transaction_timestamp, transaction_id = transaction_id, parameter_dict = self.parameter_dict))
         else:
             pass
 

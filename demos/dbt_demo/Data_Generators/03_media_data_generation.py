@@ -9,7 +9,8 @@ dbutils.widgets.dropdown("reset_data", "false", ["true", "false"], "Reset media 
 
 target_catalog = dbutils.widgets.get("target_catalog")
 target_schema = dbutils.widgets.get("target_schema")
-target_bucket_path = dbutils.widgets.get("target_bucket_path")
+temporary_gcs_bucket = dbutils.widgets.get("temporary_gcs_bucket")
+external_location_path = dbutils.widgets.get('target_bucket_path')
 source_table = dbutils.widgets.get("ref_bq_table")
 
 dbutils.widgets.text("target_bq_table_google", "", "Target Google table")
@@ -18,7 +19,7 @@ dbutils.widgets.text("target_table_b", "", "Bing table")
 dbutils.widgets.text("target_table_m", "", "Mailchimp table")
 
 target_bq_table_google = dbutils.widgets.get("target_bq_table_google")
-temporary_gcs_bucket = dbutils.widgets.get("temporary_gcs_bucket")
+target_bucket_path = f"gs://{temporary_gcs_bucket}/{external_location_path}/"
 reset_data = True if dbutils.widgets.get("reset_data") == 'true' else False
 bq_write_mode = "overwrite" if dbutils.widgets.get("reset_data") == 'true' else "append"
 
@@ -50,7 +51,7 @@ visits = spark.sql(f"""SELECT
                         FROM
                             {source_table}
                         WHERE
-                            page_url_path = '/home'
+                           page_url ilike '%?utm_source%' -- counting only the first visits
                         GROUP BY
                             ad_id
                             ,utm_source
