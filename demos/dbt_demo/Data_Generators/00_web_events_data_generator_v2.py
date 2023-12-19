@@ -213,7 +213,7 @@ df_sessions = (
                 )
     .drop("page_url")
     .withColumnRenamed("new_page_url", "page_url")
-    .withColumn("session_start", F.expr(f"timestampadd(SECOND, rand()*30*page_order, now())"))
+    .withColumn("session_start", F.expr(f"timestampadd(SECOND, rand()*30*page_order, session_start)"))
     .withColumnRenamed("session_start", "event_timestamp")
     .withColumn("event_id", F.expr("uuid()"))
     .withColumn("page_url_domain", F.concat(F.split_part("page_url", F.lit(".com/"), F.lit(1)), F.lit(".com/")))
