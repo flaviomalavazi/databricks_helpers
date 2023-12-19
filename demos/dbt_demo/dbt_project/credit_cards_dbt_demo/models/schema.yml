@@ -1,0 +1,268 @@
+
+version: 2
+
+models:
+  - name: customers
+    description: "Customer table with their identifying data (hashed) and aggregate relationship metrics"
+    columns:
+      - name: customer_id
+        description: "Customer identifier: the primary key for this table composed of the hash of each customer's email"
+      - name: customer_name
+        description: "Hashed customer name"
+      - name: customer_address
+        description: "Hashed customer address"
+      - name: customer_city
+        description: "Customer's city of residence"
+      - name: customer_state
+        description: "Customer's state of residence"
+      - name: customer_lucky_number
+        description: "Customer's state of residence"
+      - name: customer_username
+        description: "Customer's username"
+      - name: customer_email_provider
+        description: "Customer's email provider"
+      - name: customer_email_hashed
+        description: "Customer's email hashed"
+      - name: customer_record_created_at
+        description: "Timestamp when the customer record was created"
+      - name: customer_record_last_update_at
+        description: "Timestamp when the customer record was last updated"
+      - name: customer_first_web_interaction
+        description: "Timestamp when the customer interacted with us for the first time"
+      - name: customer_latest_web_interaction
+        description: "Timestamp when the customer interacted with us for the last time"
+      - name: customer_distinct_interactions
+        description: "Number of interactions the customer had with us"
+      - name: customer_total_value_transactioned
+        description: "Total value transactioned by that customer"
+      - name: customer_average_value_transactioned
+        description: "Average value transactioned by that customer"
+      - name: customer_first_transaction_at
+        description: "Timestamp when the customer first transactioned with us"
+      - name: customer_latest_transaction_at
+        description: "Timestamp when the customer last transactioned with us"
+      - name: customer_transactions
+        description: "Number of transactions "
+      - name: last_update_at
+        description: "Timestamp when this table was last updated"
+
+  - name: credit_card_transactions
+    description: "Credit Card Transactions table. This table converts typing for the data in the landing zone as well as hashes out pii data."
+    columns:
+      - name: customer_id
+        description: "Customer identifier column to identify which customer made each transaction" 
+      - name: transaction_type
+        description: "Type of transaction" 
+      - name: transaction_timestamp
+        description: "Timestmap when the transaction ocurred" 
+      - name: transaction_merchant_type
+        description: "Merchant type where the transaction ocurred" 
+      - name: transaction_merchant_name
+        description: "Merchant where the transaction ocurred" 
+      - name: transaction_card_holder
+        description: "Hashed credit card holder name for each transaction"
+      - name: transaction_currency
+        description: "Transaction currency"
+      - name: transaction_card_network
+        description: "Card network for this transaction"
+      - name: transaction_card_bin
+        description: "Credit card numeric bin for this transaction"
+      - name: transaction_bill_value
+        description: "Transaction value" 
+      - name: transaction_installments
+        description: "Transaction installments number"
+      - name: transaction_card_expiration_date
+        description: "Credit card expiration date for this transaction"
+      - name: last_update_at
+        description: "Last update of each record in this table"
+  - name: bu_results
+    description: "BU level business results"
+    columns:
+      - name: transaction_merchant_type
+        description: "Merchant type (BU)"
+      - name: transaction_card_network
+        description: "Card network that made the transaction"
+      - name: transaction_date
+        description: "Reference date (transaction date) for the aggregations"
+      - name: bu_distinct_transactions
+        description: "Distinct transactions per BU"
+      - name: bu_distinct_customers
+        description: "Distinct customers per BU"
+      - name: bu_distinct_expense_transactions
+        description: "Distinct expense type transactions per BU"
+      - name: bu_distinct_chargeback_transactions
+        description: "Distinct chargeback type transactions per BU"
+      - name: bu_total_bill_value
+        description: "Total value transactioned per BU"
+      - name: bu_average_bill_value
+        description: "Average bill value per BU"
+      - name: bu_first_transaction_at
+        description: "Timestammp for the first transaction in each BU"
+      - name: bu_latest_transaction_at
+        description: "Timestammp for the latest transaction in each BU"
+
+  - name: consolidated_media
+    description: "Media data consolidated into a single table"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: spend
+        description: "Amount of dollars spent in the ad"
+      - name: impressions
+        description: "Number of impressions that the ad had"
+      - name: cpm
+        description: "Cost per 1000 ad impressions"
+      - name: clicks
+        description: "Number of clicks the ad had"
+      - name: cpc
+        description: "Cost per click"
+      - name: ctr
+        description: "Click through rate"
+
+  - name: email_results
+    description: "Email campaign results"
+    columns:
+      - name: ad_id
+        description: "Ad id for each row"
+      - name: investment_interval
+        description: "Period of time in which the ad ID ran"
+      - name: utm_source
+        description: "Vehicle in which the ad ran (google, bing, facebook...)"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: emails_cost
+        description: "Amount of dollars spent in the email"
+      - name: emails_sent
+        description: "Number of emails sent"
+      - name: emails_delivered
+        description: "Number of emails delivered"
+      - name: email_delivery_rate
+        description: "Email delivery rate"
+      - name: emails_bounced
+        description: "Number of emails bounced (emails_sent - emails_delivered)"
+      - name: email_bounce_rate
+        description: "Email bounce rate emails_bounced/emails_sent"
+      - name: emails_opened
+        description: "Number of emails opened"
+      - name: email_open_rate
+        description: "Open rate (delivered_emails/emails_opened)"
+      - name: emails_clicked
+        description: "Number of emails clicked"
+      - name: email_click_trough_rate
+        description: "Click through rate (emails_clicked/emails_opened)"
+      - name: emails_unsubscribed
+        description: "Number of emails unsubscribed"
+      - name: email_unsubscribe_rate
+        description: "Email unsubscribe rate (emails_unsubscribed/emails_delivered)"
+
+  - name: web_sessions
+    description: "Sessions table for our website"
+    columns:
+      - name: session_id
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: session_event_order
+        description: "Event order in each session"
+      - name: event_timestamp
+        description: "Timestamp in which the event ocurred"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: customer_id
+        description: "Customer ID for each event"
+      - name: event_id
+        description: "Event ID for each event, is the primary key for this table"
+      - name: browser
+        description: "Browser name for each event"
+      - name: page_url
+        description: "Event page URL"
+      - name: page_url_path
+        description: "Path of the page where the event happened"
+
+  - name: web_sessions
+    description: "Sessions table for our website"
+    columns:
+      - name: session_id
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: session_event_order
+        description: "Event order in each session"
+      - name: event_timestamp
+        description: "Timestamp in which the event ocurred"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: customer_id
+        description: "Customer ID for each event"
+      - name: event_id
+        description: "Event ID for each event, is the primary key for this table"
+      - name: browser
+        description: "Browser name for each event"
+      - name: page_url
+        description: "Event page URL"
+      - name: page_url_path
+        description: "Path of the page where the event happened"
+
+  - name: marketing_attribution
+    description: "Marketing conversion attribution"
+    columns:
+      - name: media_session_id_with_payment
+        description: "Session ID for each set of customer visits (a session is defined hourly)"
+      - name: media_attributed_first_ad
+        description: "Ad to which the conversion was attributed"
+      - name: media_raw_event_ad_id
+        description: "RAW conversion to validate our attribution model"
+      - name: media_attribution_flag
+        description: "Flag that identifies if the conversion was correctly attributed"
+      - name: media_payment_event_id
+        description: "Event ID for the transaction"
+      - name: customer_id
+        description: "Customer ID"
+      - name: transaction_card_network
+        description: "Card network used in the transaction"
+      - name: transaction_merchant_type
+        description: "Merchant type where the transaction ocurred"
+      - name: transaction_bill_value
+        description: "Value transactioned by the customer"
+      - name: transaction_timestamp
+        description: "Timestamp in which the transaction ocurred"
+
+  - name: marketing_results
+    description: "Marketing results view"
+    columns:
+      - name: investment_interval
+        description: "Hourly timestamp window for marketing"
+      - name: utm_source
+        description: "utm source for each event"
+      - name: utm_campaign
+        description: "Campaign in which the ad ran (platform specific campaign id)"
+      - name: utm_content
+        description: "Content we ran in the ad (platform specific ad id)"
+      - name: ad_cost_per_hour
+        description: "Ad cost in that period"
+      - name: impressions_per_period
+        description: "Number of media impressions in that ad for that period"
+      - name: clicks_per_period
+        description: "Number of media clicks in that ad for that period"
+      - name: total_payments_found
+        description: "Number of payments transactioned by customers"
+      - name: total_payments_value
+        description: "Total value transactioned by customers"
+
+
+
+
