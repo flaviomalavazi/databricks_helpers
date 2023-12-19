@@ -40,7 +40,7 @@ target_table_m = f"{target_catalog}.{target_schema}.tab_mailchimp_emails"
 
 # COMMAND ----------
 
-dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator_v2', timeout_seconds=3600, arguments={
+dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator', timeout_seconds=3600, arguments={
     "temporary_gcs_bucket": temporary_gcs_bucket,
     "target_bq_table": target_big_query_table,
     "reset_data": reset_data,
