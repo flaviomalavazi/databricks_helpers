@@ -1,6 +1,6 @@
 select 
     ad_id
-    ,investment_interval
+    ,date_trunc("hour", investment_interval) as investment_interval_hourly
     ,utm_source
     ,utm_campaign
     ,utm_content

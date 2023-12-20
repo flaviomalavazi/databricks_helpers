@@ -1,16 +1,35 @@
-select
-    cm.ad_id
-    ,date_trunc("hour", cm.investment_interval) as investment_interval
-    ,cm.utm_source                              as utm_source
-    ,cm.utm_campaign                            as utm_campaign
-    ,cm.utm_content                             as utm_content
-    ,sum(cm.spend)                              as ad_cost_per_hour
-    ,sum(cm.impressions)                        as impressions_per_period
-    ,sum(cm.clicks)                             as clicks_per_period
-    ,count(ma.media_payment_event_id)           as total_payments_found
-    ,sum(ma.transaction_bill_value)             as total_payments_value
-from 
-    {{ ref('consolidated_media') }} as cm
-    left join {{ ref('marketing_attribution') }} as ma on ma.media_attributed_first_ad = cm.ad_id and cm.investment_interval = date_trunc("hour", ma.transaction_timestamp)
+with marketing as (select
+    utm_source,
+    investment_interval_hourly,
+    utm_campaign,
+    utm_content,
+    sum(ad_cost_per_hour) as costs,
+    sum(total_payments_found) as conversions,
+    sum(total_payments_value) as revenue_on_investment
+from
+  {{ ref('marketing_media_results') }}
 group by
-    all
+    utm_source,
+    investment_interval_hourly,
+    utm_campaign,
+    utm_content
+), organic as (
+    select
+        'organic'                                   as utm_source,
+        web_analytics_event_hour                    as investment_interval_hourly,
+        'organic'                                   as utm_campaign,
+        'organic'                                   as utm_content,
+        sum(0)                                      as costs,
+        count(distinct media_payment_event_id)      as conversions,
+        sum(transaction_bill_value)                 as revenue_on_investment
+    from
+        {{ ref('marketing_attribution') }}
+    where
+        media_attributed_first_utm_source = 'organic'
+    group by
+        all
+)
+
+select *, revenue_on_investment/nullif(costs,0) as roi from marketing
+union all
+select *, revenue_on_investment/nullif(costs,0) as roi from organic

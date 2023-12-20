@@ -106,7 +106,7 @@ models:
     columns:
       - name: ad_id
         description: "Ad id for each row"
-      - name: investment_interval
+      - name: investment_interval_hourly
         description: "Period of time in which the ad ID ran"
       - name: utm_source
         description: "Vehicle in which the ad ran (google, bing, facebook...)"
@@ -132,7 +132,7 @@ models:
     columns:
       - name: ad_id
         description: "Ad id for each row"
-      - name: investment_interval
+      - name: investment_interval_hourly
         description: "Period of time in which the ad ID ran"
       - name: utm_source
         description: "Vehicle in which the ad ran (google, bing, facebook...)"
@@ -191,32 +191,6 @@ models:
       - name: page_url_path
         description: "Path of the page where the event happened"
 
-  - name: web_sessions
-    description: "Sessions table for our website"
-    columns:
-      - name: session_id
-        description: "Session ID for each set of customer visits (a session is defined hourly)"
-      - name: session_event_order
-        description: "Event order in each session"
-      - name: event_timestamp
-        description: "Timestamp in which the event ocurred"
-      - name: utm_source
-        description: "utm source for each event"
-      - name: utm_campaign
-        description: "Campaign in which the ad ran (platform specific campaign id)"
-      - name: utm_content
-        description: "Content we ran in the ad (platform specific ad id)"
-      - name: customer_id
-        description: "Customer ID for each event"
-      - name: event_id
-        description: "Event ID for each event, is the primary key for this table"
-      - name: browser
-        description: "Browser name for each event"
-      - name: page_url
-        description: "Event page URL"
-      - name: page_url_path
-        description: "Path of the page where the event happened"
-
   - name: marketing_attribution
     description: "Marketing conversion attribution"
     columns:
@@ -224,10 +198,12 @@ models:
         description: "Session ID for each set of customer visits (a session is defined hourly)"
       - name: media_attributed_first_ad
         description: "Ad to which the conversion was attributed"
-      - name: media_raw_event_ad_id
-        description: "RAW conversion to validate our attribution model"
-      - name: media_attribution_flag
-        description: "Flag that identifies if the conversion was correctly attributed"
+      - name: media_attributed_first_utm_source
+        description: "Media source that contributed to the first page view in this session"
+      - name: media_attributed_first_utm_campaign
+        description: "Media campaign that contributed to the first page view in this session"
+      - name: media_attributed_first_utm_content
+        description: "Media ad that contributed to the first page view in this session"
       - name: media_payment_event_id
         description: "Event ID for the transaction"
       - name: customer_id
@@ -240,8 +216,10 @@ models:
         description: "Value transactioned by the customer"
       - name: transaction_timestamp
         description: "Timestamp in which the transaction ocurred"
+      - name: web_analytics_event_hour
+        description: "Timestamp truncated on the Hour in which the transaction ocurred"
 
-  - name: marketing_results
+  - name: marketing_media_results
     description: "Marketing results view"
     columns:
       - name: investment_interval
@@ -263,6 +241,22 @@ models:
       - name: total_payments_value
         description: "Total value transactioned by customers"
 
-
+  - name: marketing_results
+    description: "Marketing results consolidated with organic numbers"
+    columns:
+      - name: utm_source
+        description: "UTM source for that result"
+      - name: investment_interval_hourly
+        description: "Hourly timestamp window for marketing"
+      - name: utm_campaign
+        description: "UTM campaign for that result"
+      - name: utm_content
+        description: "UTM content for that result"
+      - name: costs
+        description: "Costs in that period"
+      - name: conversions
+        description: "Conversions in that period"
+      - name: revenue_on_investment
+        description: "Revenue obtained in that period"
 
 
