@@ -3,8 +3,8 @@ select
   utm_content,
   sum(costs) as total_cost,
   sum(conversions) as number_of_conversions,
-  sum(revenue_on_investment) as revenue_on_investment
-  revenue_on_investment/nullif(total_cost,0) as marketing_roi
+  sum(revenue_on_investment) as total_revenue_on_investment,
+  total_revenue_on_investment/nullif(total_cost,0) as marketing_roi
 from
   flavio_malavazi.dbt_credit_cards_demo.marketing_results
 group by
