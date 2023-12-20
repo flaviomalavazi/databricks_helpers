@@ -158,7 +158,7 @@ df_mailchimp = spark.sql("""
                     ,int(emails_sent - emails_delivered)                             as emails_bounced
                     ,round((emails_sent/1000)*0.1,2)                                 as emails_cost
                 from
-                    tab_media
+                    tab_mailchimp
                      """)
 
 # COMMAND ----------

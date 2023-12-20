@@ -40,6 +40,11 @@ target_table_m = f"{target_catalog}.{target_schema}.tab_mailchimp_emails"
 
 # COMMAND ----------
 
+spark.sql(f"CREATE CATALOG IF NOT EXISTS {target_catalog}")
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
+
+# COMMAND ----------
+
 dbutils.notebook.run(path='./Data_Generators/00_web_events_data_generator', timeout_seconds=3600, arguments={
     "temporary_gcs_bucket": temporary_gcs_bucket,
     "target_bq_table": target_big_query_table,

@@ -31,9 +31,7 @@ if reset_data:
     spark.sql(f"DROP TABLE IF EXISTS  {target_table}")
     spark.sql(f"DROP VOLUME IF EXISTS {target_catalog}.{target_schema}.landing_database_events")
     spark.sql(f"DROP VOLUME IF EXISTS {target_catalog}.{target_schema}.streaming_checkpoints")
-    
 
-spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.landing_database_events")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {target_catalog}.{target_schema}.streaming_checkpoints")
 

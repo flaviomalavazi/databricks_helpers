@@ -2,7 +2,7 @@
 
 select
     ad_id
-    ,investment_interval
+    ,investment_interval_hourly
     ,utm_source
     ,utm_campaign
     ,utm_content

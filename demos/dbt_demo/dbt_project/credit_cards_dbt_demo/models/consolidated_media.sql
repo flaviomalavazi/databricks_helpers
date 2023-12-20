@@ -3,7 +3,7 @@
 with tab_email_normalized AS (
 select
     ad_id
-    ,investment_interval
+    ,investment_interval_hourly
     ,utm_source
     ,utm_campaign
     ,utm_content
