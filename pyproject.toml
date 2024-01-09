@@ -50,4 +50,5 @@ force-exclude = '''
 
 [tool.isort]
 py_version=39
+profile="black"
 skip = [".venv", "notebooks"]
