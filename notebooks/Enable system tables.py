@@ -4,7 +4,7 @@
 # MAGIC Since system tables are governed by Unity Catalog, you need at least one Unity Catalog-governed workspace in your account to enable system tables. That way you can map your system tables to the Unity Catalog metastore. System tables must be enabled by an **account admin**. You can enable system tables in your account using either the Databricks CLI or by calling the Unity Catalog API in a notebook.
 # MAGIC <br>
 # MAGIC <br>
-# MAGIC You can enable system tables using API calls or directly in a Databricks notebook (such as this example). Please refer to the documentation for your cloud for further details ([AWS](https://docs.databricks.com/administration-guide/system-tables/index.html) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/administration-guide/system-tables/))
+# MAGIC You can enable system tables using API calls or directly in a Databricks notebook (such as this example). Please refer to the documentation for your cloud for further details ([AWS](https://docs.databricks.com/administration-guide/system-tables/index.html) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/administration-guide/system-tables/) | [GCP](https://docs.gcp.databricks.com/en/administration-guide/system-tables/index.html))
 # MAGIC
 
 # COMMAND ----------
