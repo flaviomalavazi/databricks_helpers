@@ -1,7 +1,7 @@
 
 // First we need to add the ADF service principal to the Azure databricks account
 resource "databricks_service_principal" "adf_sp" {
-  provider       = databricks.accounts
+  provider       = databricks.workspace
   display_name   = "ADF Service Principal"
   application_id = data.azuread_service_principal.adf_service_principal.client_id
 }
