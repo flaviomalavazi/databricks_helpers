@@ -2,7 +2,7 @@
 import delta_sharing
 
 # %%
-share_file_path = "../delta_sharing_credential_files/config_gcp_2.share" # for public shares: 'https://databricks-datasets-oregon.s3-us-west-2.amazonaws.com/delta-sharing/share/open-datasets.share'
+share_file_path = "../delta_sharing_credential_files/config_mais_recente.share" # for public shares: 'https://databricks-datasets-oregon.s3-us-west-2.amazonaws.com/delta-sharing/share/open-datasets.share'
 
 # Create a SharingClient
 client = delta_sharing.SharingClient(share_file_path)
@@ -21,9 +21,11 @@ for share in shares:
       print(f'name = {table.name}, share = {table.share}, schema = {table.schema}')
 
 # %%
-table_url = f"{share_file_path}#compartilhamento_azure.caio_demo_airbnb.listings_silver"
+table_url = f"{share_file_path}#flavio_malavazi_delta_sharing.cadastro.tab_gerentes"
 
 # Use delta sharing client to load data
 pandas_df = delta_sharing.load_as_pandas(table_url)
 
 pandas_df.head(10)
+
+# COMMAND ----------
