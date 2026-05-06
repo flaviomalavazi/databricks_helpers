@@ -6,10 +6,10 @@ select
     ,utm_content
     ,spend
     ,impressions
-    ,(impressions/1000.0)/spend as cpm
+    ,(impressions/1000.0)/nullif(spend,0) as cpm
     ,clicks
-    ,(clicks)/spend             as cpc
-    ,(clicks*1.0)/impressions   as ctr
+    ,(clicks)/nullif(spend,0)             as cpc
+    ,(clicks*1.0)/nullif(impressions,0)   as ctr
 from
     {{ source('raw', 'tab_google_ads') }}
 where
