@@ -41,7 +41,12 @@ df = spark.read.table(source_table)
 
 # COMMAND ----------
 
-actual_orders = df.where("page_url_path = 'confirmation/'").select("user_id", "event_timestamp", "event_id").drop_duplicates()
+if spark.catalog.tableExists(target_table):
+    print("Table exists, getting new transactions...")
+    actual_orders = df.where(f"page_url_path = 'confirmation/' and event_id not in (select distinct transaction_id from {target_table})").select("user_id", "event_timestamp", "event_id").drop_duplicates()
+else:
+    print("Table doesn't exist, getting all orders...")
+    actual_orders = df.where(f"page_url_path = 'confirmation/'").select("user_id", "event_timestamp", "event_id").drop_duplicates()
 
 # COMMAND ----------
 
