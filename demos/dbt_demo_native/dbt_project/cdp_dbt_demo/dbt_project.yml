@@ -2,12 +2,12 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'credit_cards_dbt_demo'
+name: 'cdp_dbt_demo'
 version: '1.0.0'
 config-version: 2
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'credit_cards_dbt_demo'
+profile: 'cdp_dbt_demo'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -28,8 +28,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Override per-environment via:
 #   dbt run --vars '{raw_catalog: my_catalog, raw_schema: my_schema}'
 vars:
-  raw_catalog: flavio_malavazi
-  raw_schema: dbt_credit_cards_demo_raw
+  raw_catalog: cdp_dbt_demo
+  raw_schema: cdp_dbt_demo_raw
 
 
 # Configuring models
@@ -39,7 +39,7 @@ vars:
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  credit_cards_dbt_demo:
+  cdp_dbt_demo:
     materialized: table
     staging:
       materialized: view

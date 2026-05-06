@@ -5,8 +5,8 @@ dbutils.widgets.text("target_catalog", "", "Target catalog")
 dbutils.widgets.text("target_schema", "", "Target schema")
 dbutils.widgets.text("target_table_web_events", "tab_analytics_events", "Target web events table")
 dbutils.widgets.dropdown("reset_data", "false", ["false", "true"], "Reset data")
-dbutils.widgets.text("number_of_users", "1000", "Number of random users")
-dbutils.widgets.text("sessions_per_day", "30000", "Number of sessions per day")
+dbutils.widgets.text("number_of_users", "10", "Number of random users")
+dbutils.widgets.text("sessions_per_day", "3000", "Number of sessions per day")
 dbutils.widgets.text("simulation_duration", "120", "Simulation duration")
 
 # COMMAND ----------
@@ -36,7 +36,7 @@ target_table_m = f"{target_catalog}.{target_schema}.tab_mailchimp_emails"
 
 # COMMAND ----------
 
-spark.sql(f"CREATE CATALOG IF NOT EXISTS {target_catalog}")
+spark.sql(f"CREATE CATALOG IF NOT EXISTS {target_catalog} MANAGED LOCATION 's3://databricks-storage-7474649725642103/unity-catalog/7474649725642103/{target_catalog}'")
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
 
 # COMMAND ----------
@@ -85,7 +85,3 @@ dbutils.notebook.run(path='./Data_Generators/03_media_data_generation', timeout_
     "target_table_b": target_table_b,
     "target_table_m": target_table_m,
 })
-
-# COMMAND ----------
-
-

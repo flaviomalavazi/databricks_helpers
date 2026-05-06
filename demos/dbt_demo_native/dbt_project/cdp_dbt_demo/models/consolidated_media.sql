@@ -7,12 +7,12 @@ select
     ,utm_source
     ,utm_campaign
     ,utm_content
-    ,emails_cost                    as spend
-    ,emails_opened                  as impressions
-    ,(emails_opened/1000.0)/spend   as cpm
-    ,emails_clicked                 as clicks
-    ,(clicks)/spend                 as cpc
-    ,(clicks*1.0)/impressions       as ctr
+    ,emails_cost                              as spend
+    ,emails_opened                            as impressions
+    ,(emails_opened/1000.0)/nullif(spend,0)   as cpm
+    ,emails_clicked                           as clicks
+    ,(clicks)/nullif(spend,0)                 as cpc
+    ,(clicks*1.0)/nullif(impressions,0)       as ctr
 from
     {{ ref('vw_mailchimp') }}
 )
